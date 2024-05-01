@@ -1,0 +1,87 @@
+﻿@model IEnumerable<WebApplication3.Models.Student>
+
+@{
+    ViewData["Title"] = "Students";
+}
+
+<h1 class="text-center">Students</h1>
+
+<button class="btn btn-dark">
+    <a asp-action="Create" style="text-decoration:none; color:white;">Create New</a>
+</button>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.firstname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.middlename)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.lastname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.birthdate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.guardian)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.img)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.phoneno)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.createdAt)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.firstname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.middlename)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.lastname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.birthdate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.guardian)
+            </td>
+            <td>
+                    @if (!string.IsNullOrEmpty(item.img))
+                    {
+                        var imagePath = "/images/" + item.img; 
+                        <img src="@imagePath" alt="Student Image" width="100" />
+                    }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.phoneno)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.createdAt)
+            </td>
+            <td>
+                <button class="btn btn-primary">
+                        <a asp-action="Edit" style="text-decoration:none; color:white;" asp-route-id="@item.Id">Edit</a>
+                    </button>
+                    <button class="btn btn-dark">
+                        <a asp-action="Details" style="text-decoration:none; color:white;" asp-route-id="@item.Id">Details</a>
+                    </button>
+                    <button class="btn btn-danger">
+                    <a asp-action="Delete" style="text-decoration:none; color:white;" asp-route-id="@item.Id">Delete</a>
+                    </button>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
