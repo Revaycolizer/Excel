@@ -57,46 +57,44 @@ namespace WebApplication3.Controllers
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
-                }
+                
 
-                using (var stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read))
-                {
                     List<Student> studentsToInsert = new List<Student>();
+
                     using (var reader = ExcelReaderFactory.CreateReader(stream))
                     {
+                        while (reader.Read())
+                        {
+                            string dateValue = reader.GetValue(2).ToString();
+                            DateTime birthDate;
 
-                        
-                            while (reader.Read())
+                            DateTime.TryParseExact(dateValue, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out birthDate);
+
+                            string phoneNoValue = reader.GetValue(6).ToString();
+                            long phoneNo;
+
+                            long.TryParse(phoneNoValue, out phoneNo);
+
+                            Student s = new Student
                             {
-                                string dateValue = reader.GetValue(2).ToString();
-                                DateTime birthDate;
+                                firstname = reader.GetValue(1).ToString(),
+                                birthdate = birthDate.Date,
+                                middlename = reader.GetValue(3).ToString(),
+                                lastname = reader.GetValue(4).ToString(),
+                                guardian = reader.GetValue(5).ToString(),
+                                phoneno = phoneNo,
+                                createdAt = DateTime.Now
+                            };
 
-                                DateTime.TryParseExact(dateValue, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out birthDate);
-
-                                string phoneNoValue = reader.GetValue(6).ToString();
-                                long phoneNo;
-
-                                long.TryParse(phoneNoValue, out phoneNo);
-                                Student s = new Student();
-                                s.firstname = reader.GetValue(1).ToString();
-                                s.birthdate = birthDate.Date;
-                                s.middlename = reader.GetValue(3).ToString() ;
-                                s.lastname = reader.GetValue(4).ToString();
-                                s.guardian = reader.GetValue(5).ToString();
-                                s.phoneno = phoneNo;
-
-
-                                context.AddRange(s);
-                                await context.SaveChangesAsync();
-                                
-                            }
-
-                        Response.Redirect("/");
-                        
-
-                        
-
+                            studentsToInsert.Add(s);
+                        }
                     }
+
+                    context.Students.AddRange(studentsToInsert);
+                    await context.SaveChangesAsync();
+
+                    return RedirectToAction("Index"); // Assuming you want to redirect to the index page after inserting students
+
                 }
 
             }
