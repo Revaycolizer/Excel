@@ -11,5 +11,6 @@ namespace WebApplication3.Services
         }
        
         public DbSet<Student> Students { get; set; }
+       
     }
 }
